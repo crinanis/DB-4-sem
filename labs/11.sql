@@ -1,4 +1,4 @@
-+-- 1. Разработать сценарий, де-монстрирующий работу в ре-жиме неявной транзакции.
+-- 1. Разработать сценарий, демонстрирующий работу в режиме неявной транзакции.
 --Проанализировать пример, приведенный справа, в котором создается таблица Х, и создать сценарий для другой таблицы.
 
 set nocount on
@@ -21,58 +21,56 @@ if  exists (select * from  SYS.OBJECTS
           where OBJECT_ID= object_id(N'DBO.TAB')) print 'таблица TAB есть';  
 else print 'таблицы TAB нет'
 
---2
---Разработать сценарий, демонстрирующий свойство атомар-ности явной транзакции на примере базы данных X_UNIVER. 
---В блоке CATCH предусмот-реть выдачу соответствующих сообщений об ошибках. 
---Опробовать работу сценария при использовании различных операторов модификации таб-лиц.
+--2. Разработать сценарий, демонстрирующий свойство атомарности явной транзакции на примере базы данных X_UNIVER. 
+--В блоке CATCH предусмотреть выдачу соответствующих сообщений об ошибках. 
+--Опробовать работу сценария при использовании различных операторов модификации таблиц.
 
 begin try
 	begin tran
 		insert FACULTY values ('ДФ', 'Факультет других наук');
-	    insert FACULTY values ('ПиМ', 'Факультет print-технологий');
+	    insert FACULTY values ('ПиМ', 'Факультет printt-технологий');
 	commit tran;
 end try
 begin catch
 	print 'ошибка:'+case
-	when error_number()=2627 and patindex('%PK_FASCULTY%', error_message())>0
+	when error_number() = 2627 and patindex('%FACULTY_PK%', error_message()) >0
 	then 'дублирование товара'
-	else 'неизвестная ошибка'+cast(error_number()as varchar(5))+error_message()
+	else 'неизвестная ошибка' + cast(error_number() as varchar(5)) + error_message()
 	end;
 	if @@TRANCOUNT>0 rollback tran;
 	end catch;
 
---3. Разработать сценарий, де-монстрирующий применение оператора SAVE TRAN на при-мере базы данных X_UNIVER. 
---В блоке CATCH предусмот-реть выдачу соответствующих сообщений об ошибках. 
+--3. Разработать сценарий, демонстрирующий применение оператора SAVE TRAN на примере базы данных X_UNIVER. 
+--В блоке CATCH предусмотреть выдачу соответствующих сообщений об ошибках. 
 --Опробовать работу сценария при использовании различных контрольных точек и различных операторов модификации таблиц.
 
 declare @point varchar(32);
 begin try
 begin tran
-	insert FACULTY values('ПсихФак','Факультет Психологии');
+	insert FACULTY values('ФП','Факультет Психологии');
 	set @point='p1'; save tran @point;
 	insert FACULTY values('ЛФ','Факультет Лингвистики');
 	set @point='p2' ; save tran @point;
 	insert FACULTY values('МФ', 'Медицинский факультет');
 	commit tran;
-	end try
+end try
 begin catch
-print 'ошибка:'+case when error_number()=2627
-and patindex('%PK_FACULTY%',error_message())>0
-then 'дублирование товара'
-else 'неизвестная ошибка:'+cast(error_number()as varchar(5))
-+error_message()
-end;
-if @@trancount>0
-begin 
-print 'контрольная точка:'+@point;
-rollback tran @point;
-commit tran;
-end;
+	print 'ошибка:' + case when error_number() = 2627
+	and patindex('%FACULTY_PK%', error_message()) > 0
+	then 'дублирование товара'
+	else 'неизвестная ошибка:' + cast(error_number() as varchar(5)) + error_message()
+	end
+	if @@trancount>0
+	begin 
+		print 'контрольная точка:'+@point;
+		rollback tran @point;
+		commit tran;
+	end;
 end catch;
 
 --4 Разработать два сценария A и B на примере базы данных X_UNIVER. 
---Сценарий A представляет собой явную транзакцию с уров-нем изолированности READ UNCOMMITED, сценарий B – явную транзакцию с уровнем изолированности READ COMMITED (по умолчанию). 
---Сценарий A должен демонстрировать, что уровень READ UNCOMMITED допускает не-подтвержденное, неповторяю-щееся и фантомное чтение. 
+--Сценарий A представляет собой явную транзакцию с уровнем изолированности READ UNCOMMITED, сценарий B – явную транзакцию с уровнем изолированности READ COMMITED (по умолчанию). 
+--Сценарий A должен демонстрировать, что уровень READ UNCOMMITED допускает неподтвержденное, неповторяющееся и фантомное чтение. 
 
 ----------------A------------------
 set transaction isolation level READ UNCOMMITTED
@@ -95,7 +93,7 @@ rollback;
 
 --5.Разработать два сценария A и B на примере базы данных X_UNIVER. 
 --Сценарии A и В  представляют собой явные транзакции с уровнем изолированности READ COMMITED. 
---Сценарий A должен демон-стрировать, что уровень READ COMMITED не допускает не-подтвержденного чтения, но при этом возможно неповторя-ющееся и фантомное чтение. 
+--Сценарий A должен демонстрировать, что уровень READ COMMITED не допускает неподтвержденного чтения, но при этом возможно неповторяющееся и фантомное чтение. 
 
 --А--
 set transaction isolation level READ COMMITTED
@@ -116,8 +114,8 @@ commit;
 ------------t2--------------
 
 --6. Разработать два сценария A и B на примере базы данных X_UNIVER. 
---Сценарий A представляет со-бой явную транзакцию с уров-нем изолированности RE-PEATABLE READ. Сценарий B – явную транзакцию с уровнем изолированности READ COM-MITED. 
---Сценарий A должен демон-стрировать, что уровень REAPETABLE READ не допус-кает неподтвержденного чтения и неповторяющегося чтения, но при этом возможно фантомное чтение. 
+--Сценарий A представляет собой явную транзакцию с уровнем изолированности REPEATABLE READ. Сценарий B – явную транзакцию с уровнем изолированности READ COMMITED. 
+--Сценарий A должен демонстрировать, что уровень REAPETABLE READ не допускает неподтвержденного чтения и неповторяющегося чтения, но при этом возможно фантомное чтение. 
 
 set transaction isolation level  REPEATABLE READ 
 begin transaction 
@@ -135,6 +133,8 @@ insert PULPIT values ('пратв', 'Полиграфических производств',  'ИДИП');
 commit; 
 select * from PULPIT
 	-------------------------- t2 --------------------
+
+
 --7--
 -- A ---
 set transaction isolation level SERIALIZABLE 
@@ -159,6 +159,7 @@ commit;
 select PULPIT from PULPIT where FACULTY = 'ИТ';
       -------------------------- t2 --------------------
 	  select * from PULPIT
+
 
 --8--
 select (select count(*) from dbo.PULPIT where FACULTY = 'ИДиП') 'Кафедры ИДИПа', 
