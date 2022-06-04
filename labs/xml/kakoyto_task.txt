@@ -1,0 +1,26 @@
+use Exam_scheme
+-- T1
+select T1.REGION as '@регион',
+	   (select count(*) from OFFICES o where T1.REGION = o.REGION) as '@Кол_во_городов',
+	   -- T2
+           (
+       	   select T2.CITY as '@название',
+		  right(rtrim(SALESREPS.NAME), charindex(' ', reverse(rtrim(SALESREPS.NAME)) + ' ') - 1) as '@менеджер',
+		  -- T3
+		  (
+		  select SALESREPS.NAME as '@имя'
+		  from SALESREPS
+		  join OFFICES as T3 on T3.OFFICE = SALESREPS.REP_OFFICE
+		  where T3.CITY = T2.CITY
+		  order by SALESREPS.NAME
+		  for xml path('REP'), type
+		  ) 
+           from OFFICES as T2
+	   join SALESREPS on T2.MGR = SALESREPS.EMPL_NUM
+       	   where T2.REGION = T1.REGION
+       	   group by T2.CITY, SALESREPS.NAME
+       	   for xml path('CITY'), type
+       	   )
+from OFFICES as T1
+group by REGION
+for xml path('REGION'), root('REGIONS')
