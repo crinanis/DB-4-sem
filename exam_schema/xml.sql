@@ -1,8 +1,8 @@
--- таблица с 1 столбцом xml, положить туда три фрагмента xml
--- в одном - сотрудники восточного региона
--- в одном - сотрудники западного региона
--- в одном - все сотрудники
--- поставить в xml дату найма сотрудника западных регионов на 1 день больше или меньше
+-- С‚Р°Р±Р»РёС†Р° СЃ 1 СЃС‚РѕР»Р±С†РѕРј xml, РїРѕР»РѕР¶РёС‚СЊ С‚СѓРґР° С‚СЂРё С„СЂР°РіРјРµРЅС‚Р° xml
+-- РІ РѕРґРЅРѕРј - СЃРѕС‚СЂСѓРґРЅРёРєРё РІРѕСЃС‚РѕС‡РЅРѕРіРѕ СЂРµРіРёРѕРЅР°
+-- РІ РѕРґРЅРѕРј - СЃРѕС‚СЂСѓРґРЅРёРєРё Р·Р°РїР°РґРЅРѕРіРѕ СЂРµРіРёРѕРЅР°
+-- РІ РѕРґРЅРѕРј - РІСЃРµ СЃРѕС‚СЂСѓРґРЅРёРєРё
+-- РїРѕСЃС‚Р°РІРёС‚СЊ РІ xml РґР°С‚Сѓ РЅР°Р№РјР° СЃРѕС‚СЂСѓРґРЅРёРєР° Р·Р°РїР°РґРЅС‹С… СЂРµРіРёРѕРЅРѕРІ РЅР° 1 РґРµРЅСЊ Р±РѕР»СЊС€Рµ РёР»Рё РјРµРЅСЊС€Рµ
 
 CREATE TABLE EMPLOYEES( 
 	row_num int, 
@@ -15,10 +15,10 @@ SELECT * FROM EMPLOYEES;
 DECLARE @doc nvarchar(3000);
 DECLARE @region1 nvarchar(1000), @region2 nvarchar(1000), @region3 nvarchar(1000);
 
--- ПЕРВЫЙ ФРАГМЕНТ
-SET @region1 = (SELECT T1.REGION AS '@регион', 
+-- РџР•Р Р’Р«Р™ Р¤Р РђР“РњР•РќРў
+SET @region1 = (SELECT T1.REGION AS '@СЂРµРіРёРѕРЅ', 
 						(
-						SELECT SALESREPS.NAME AS '@имя', SALESREPS.HIRE_DATE AS '@дата_найма'
+						SELECT SALESREPS.NAME AS '@РёРјСЏ', SALESREPS.HIRE_DATE AS '@РґР°С‚Р°_РЅР°Р№РјР°'
 						FROM SALESREPS
 						join OFFICES AS T3 ON T3.OFFICE = SALESREPS.REP_OFFICE
 						WHERE T1.REGION = t3.REGION
@@ -31,10 +31,10 @@ SET @region1 = (SELECT T1.REGION AS '@регион',
 )
 
 
--- ВТОРОЙ ФРАГМЕНТ
-SET @region2 = (SELECT T1.REGION AS '@регион', 
+-- Р’РўРћР РћР™ Р¤Р РђР“РњР•РќРў
+SET @region2 = (SELECT T1.REGION AS '@СЂРµРіРёРѕРЅ', 
 						(
-						SELECT SALESREPS.NAME AS '@имя', DATEADD(DAY, 1, SALESREPS.HIRE_DATE) as '@дата_найма'
+						SELECT SALESREPS.NAME AS '@РёРјСЏ', DATEADD(DAY, 1, SALESREPS.HIRE_DATE) as '@РґР°С‚Р°_РЅР°Р№РјР°'
 						FROM SALESREPS
 						join OFFICES AS T3 ON T3.OFFICE = SALESREPS.REP_OFFICE
 						WHERE T1.REGION = t3.REGION
@@ -47,17 +47,21 @@ SET @region2 = (SELECT T1.REGION AS '@регион',
 )
 
 
--- ТРЕТИЙ ФРАГМЕНТ
+-- РўР Р•РўРР™ Р¤Р РђР“РњР•РќРў
 SET @region3 = (SELECT CONCAT_WS(' ', @region1, @region2))
 
--- ОБЪЕДИНЯЕМ В ОДИН ДОКУМЕНТ
+-- РћР‘РЄР•Р”РРќРЇР•Рњ Р’ РћР”РРќ Р”РћРљРЈРњР•РќРў
+DECLARE @h int = 0;
 SET @doc = '<employees>' + 
 				'<FR1>' + @region1 + '</FR1>' + 
 				'<FR2>' + @region2 + '</FR2>' +
 				'<FR3>' + @region3 + '</FR3>' + 
 			'</employees>';
 
-insert into EMPLOYEES(row_num, fragment) values (1, cast(@doc as xml))
+
+EXEC sp_xml_preparedocument @h OUTPUT, @doc; --РїРѕРґРіРѕС‚РѕРІРєР° РґРѕРєСѓРјРµРЅС‚Р°
+
+insert into EMPLOYEES(row_num, fragment) values (2, cast(@doc as xml))
 
 SELECT * FROM EMPLOYEES
 
