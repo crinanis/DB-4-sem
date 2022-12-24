@@ -1,6 +1,6 @@
 use exam_schema;
 
--- Найти товары,  которые заказывали сотрудники из офисов Восточного региона.
+-- ГЌГ Г©ГІГЁ ГІГ®ГўГ Г°Г»,  ГЄГ®ГІГ®Г°Г»ГҐ Г§Г ГЄГ Г§Г»ГўГ Г«ГЁ Г±Г®ГІГ°ГіГ¤Г­ГЁГЄГЁ ГЁГ§ Г®ГґГЁГ±Г®Гў Г‚Г®Г±ГІГ®Г·Г­Г®ГЈГ® Г°ГҐГЈГЁГ®Г­Г .
 
 SELECT p.PRODUCT_ID, p.DESCRIPTION, s.NAME, ofi.REGION
 FROM            PRODUCTS p
@@ -11,7 +11,7 @@ FROM            PRODUCTS p
 GROUP BY p.PRODUCT_ID, p.DESCRIPTION, s.NAME, ofi.REGION
 
 
--- Подсчитать среднюю цену товара для каждого сотрудника и найти тех, у кого средняя цена товара больше 600.
+-- ГЏГ®Г¤Г±Г·ГЁГІГ ГІГј Г±Г°ГҐГ¤Г­ГѕГѕ Г¶ГҐГ­Гі ГІГ®ГўГ Г°Г  Г¤Г«Гї ГЄГ Г¦Г¤Г®ГЈГ® Г±Г®ГІГ°ГіГ¤Г­ГЁГЄГ  ГЁ Г­Г Г©ГІГЁ ГІГҐГµ, Гі ГЄГ®ГЈГ® Г±Г°ГҐГ¤Г­ГїГї Г¶ГҐГ­Г  ГІГ®ГўГ Г°Г  ГЎГ®Г«ГјГёГҐ 600.
 
 SELECT p.PRODUCT_ID, p.DESCRIPTION, avg(p.PRICE) as AVG_PRICE, s.NAME
 FROM			PRODUCTS p
@@ -24,7 +24,7 @@ HAVING avg(p.PRICE)>600
 
 
 
--- Найти товары, которые не заказывали сотрудники из офисов Восточного региона
+-- ГЌГ Г©ГІГЁ ГІГ®ГўГ Г°Г», ГЄГ®ГІГ®Г°Г»ГҐ Г­ГҐ Г§Г ГЄГ Г§Г»ГўГ Г«ГЁ Г±Г®ГІГ°ГіГ¤Г­ГЁГЄГЁ ГЁГ§ Г®ГґГЁГ±Г®Гў Г‚Г®Г±ГІГ®Г·Г­Г®ГЈГ® Г°ГҐГЈГЁГ®Г­Г 
 
 SELECT DISTINCT p.PRODUCT_ID 
 FROM			PRODUCTS p
@@ -34,7 +34,7 @@ FROM			PRODUCTS p
 							JOIN ORDERS ord ON r.EMPL_NUM = ord.REP
 
 
--- --найти товары, которые не заказывали сотрудники из офисов Восточного региона
+-- --Г­Г Г©ГІГЁ ГІГ®ГўГ Г°Г», ГЄГ®ГІГ®Г°Г»ГҐ Г­ГҐ Г§Г ГЄГ Г§Г»ГўГ Г«ГЁ Г±Г®ГІГ°ГіГ¤Г­ГЁГЄГЁ ГЁГ§ Г®ГґГЁГ±Г®Гў Г‚Г®Г±ГІГ®Г·Г­Г®ГЈГ® Г°ГҐГЈГЁГ®Г­Г 
 select p.PRODUCT_ID
 From PRODUCTS as p
 Where not exists(select* from ORDERS as o
@@ -46,7 +46,7 @@ s.REP_OFFICE IN (select s2.REP_OFFICE
 From SALESREPS s2 inner join OFFICES o2
 on s2.REP_OFFICE=o2.OFFICE and o2.REGION Like 'Eastern')))
 
--- Найти офисы, в которых не было заказов в период с 01.01.2007 по 01.01.2008
+-- ГЌГ Г©ГІГЁ Г®ГґГЁГ±Г», Гў ГЄГ®ГІГ®Г°Г»Гµ Г­ГҐ ГЎГ»Г«Г® Г§Г ГЄГ Г§Г®Гў Гў ГЇГҐГ°ГЁГ®Г¤ Г± 01.01.2007 ГЇГ® 01.01.2008
 
 select d.OFFICE from OFFICES as d
 where OFFICE not in
@@ -54,7 +54,7 @@ where OFFICE not in
 join OFFICES ofs on r.REP_OFFICE = ofs.OFFICE
 join ORDERS ord on ord.REP = r.EMPL_NUM and ORDER_DATE between '01-01-2007' and '01-01-2008')
 
--- Найти самый дорогой товар, проданный каждым сотрудником и отсортировать по значению цены товара
+-- ГЌГ Г©ГІГЁ Г±Г Г¬Г»Г© Г¤Г®Г°Г®ГЈГ®Г© ГІГ®ГўГ Г°, ГЇГ°Г®Г¤Г Г­Г­Г»Г© ГЄГ Г¦Г¤Г»Г¬ Г±Г®ГІГ°ГіГ¤Г­ГЁГЄГ®Г¬ ГЁ Г®ГІГ±Г®Г°ГІГЁГ°Г®ГўГ ГІГј ГЇГ® Г§Г­Г Г·ГҐГ­ГЁГѕ Г¶ГҐГ­Г» ГІГ®ГўГ Г°Г 
 
 SELECT PRODUCTS.PRODUCT_ID, PRODUCTS.DESCRIPTION, max(PRODUCTS.PRICE) as MAX_PRICE, SALESREPS.NAME
 FROM			PRODUCTS
@@ -65,14 +65,14 @@ FROM			PRODUCTS
 GROUP BY PRODUCTS.PRODUCT_ID, PRODUCTS.DESCRIPTION, PRODUCTS.PRICE, SALESREPS.NAME
 ORDER BY PRODUCTS.PRICE desc
 
--- Офисы в которых были заказы с 01.01.2007 до 01.01.2008
+-- ГЋГґГЁГ±Г» Гў ГЄГ®ГІГ®Г°Г»Гµ ГЎГ»Г«ГЁ Г§Г ГЄГ Г§Г» Г± 01.01.2007 Г¤Г® 01.01.2008
 
 select distinct OFFICE from SALESREPS r
 join OFFICES ofs on r.REP_OFFICE = ofs.OFFICE
 join ORDERS ord on ord.REP = r.EMPL_NUM  and ORDER_DATE between '01-01-2007' and '01-01-2008'
 
--- Подсчитать кол-во товаров, заказанных сотрудниками каждого офиса, и отсортировать по убыванию суммы всех заказов
-select count(*) Кол_во, sum(ord.AMOUNT) [Общая сумма], offi.OFFICE [Офис]
+-- ГЏГ®Г¤Г±Г·ГЁГІГ ГІГј ГЄГ®Г«-ГўГ® ГІГ®ГўГ Г°Г®Гў, Г§Г ГЄГ Г§Г Г­Г­Г»Гµ Г±Г®ГІГ°ГіГ¤Г­ГЁГЄГ Г¬ГЁ ГЄГ Г¦Г¤Г®ГЈГ® Г®ГґГЁГ±Г , ГЁ Г®ГІГ±Г®Г°ГІГЁГ°Г®ГўГ ГІГј ГЇГ® ГіГЎГ»ГўГ Г­ГЁГѕ Г±ГіГ¬Г¬Г» ГўГ±ГҐГµ Г§Г ГЄГ Г§Г®Гў
+select count(*) ГЉГ®Г«_ГўГ®, sum(ord.AMOUNT) [ГЋГЎГ№Г Гї Г±ГіГ¬Г¬Г ], offi.OFFICE [ГЋГґГЁГ±]
 from ORDERS ord
 inner join SALESREPS sales
 on sales.EMPL_NUM = ord.REP
@@ -82,34 +82,34 @@ where ord.REP in (select EMPL_NUM from SALESREPS s inner join OFFICES offi on of
 group by offi.OFFICE
 order by sum(ord.AMOUNT) desc
 
--- Подсчитать количество товаров , заказанных сотрудниками каждого офиса и отсортировать по убыванию суммарного значения всех заказов
+-- ГЏГ®Г¤Г±Г·ГЁГІГ ГІГј ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГІГ®ГўГ Г°Г®Гў , Г§Г ГЄГ Г§Г Г­Г­Г»Гµ Г±Г®ГІГ°ГіГ¤Г­ГЁГЄГ Г¬ГЁ ГЄГ Г¦Г¤Г®ГЈГ® Г®ГґГЁГ±Г  ГЁ Г®ГІГ±Г®Г°ГІГЁГ°Г®ГўГ ГІГј ГЇГ® ГіГЎГ»ГўГ Г­ГЁГѕ Г±ГіГ¬Г¬Г Г°Г­Г®ГЈГ® Г§Г­Г Г·ГҐГ­ГЁГї ГўГ±ГҐГµ Г§Г ГЄГ Г§Г®Гў
 Select s.rep_office, count(*) as amount_of_goods from ORDERS o
 inner join salesreps s on s.empl_num = o.rep
 group by s.rep_office
 order by amount_of_goods desc;
 
--- Найти 3 товара, которые заказывали меньше всего
+-- ГЌГ Г©ГІГЁ 3 ГІГ®ГўГ Г°Г , ГЄГ®ГІГ®Г°Г»ГҐ Г§Г ГЄГ Г§Г»ГўГ Г«ГЁ Г¬ГҐГ­ГјГёГҐ ГўГ±ГҐГЈГ®
 select top(3) QTY, PRODUCT
 From ORDERS as a
 order by QTY;
 
 -- 
-select top(3)  PRODUCTS.PRODUCT_ID, COALESCE(sum(QTY),0)[Количество]
+select top(3)  PRODUCTS.PRODUCT_ID, COALESCE(sum(QTY),0)[ГЉГ®Г«ГЁГ·ГҐГ±ГІГўГ®]
 From ORDERS as a right join PRODUCTS on a.PRODUCT = PRODUCTS.PRODUCT_ID
 group by PRODUCTS.PRODUCT_ID
 order by sum(a.QTY) asc;
 
--- Найти 2 сотрудников , которые выполнили больше всех заказов в организациях с кредитным лимитом меньше 30000
-select top(2) t.NAME,t.[кол-во заказов] from(
-select rep.NAME,Count(*)[кол-во заказов]
+-- ГЌГ Г©ГІГЁ 2 Г±Г®ГІГ°ГіГ¤Г­ГЁГЄГ®Гў , ГЄГ®ГІГ®Г°Г»ГҐ ГўГ»ГЇГ®Г«Г­ГЁГ«ГЁ ГЎГ®Г«ГјГёГҐ ГўГ±ГҐГµ Г§Г ГЄГ Г§Г®Гў Гў Г®Г°ГЈГ Г­ГЁГ§Г Г¶ГЁГїГµ Г± ГЄГ°ГҐГ¤ГЁГІГ­Г»Г¬ Г«ГЁГ¬ГЁГІГ®Г¬ Г¬ГҐГ­ГјГёГҐ 30000
+select top(2) t.NAME,t.[ГЄГ®Г«-ГўГ® Г§Г ГЄГ Г§Г®Гў] from(
+select rep.NAME,Count(*)[ГЄГ®Г«-ГўГ® Г§Г ГЄГ Г§Г®Гў]
 from SALESREPS rep
 join ORDERS ord on ord.REP = rep.EMPL_NUM
 join CUSTOMERS cust on ord.CUST=cust.CUST_NUM and cust.CREDIT_LIMIT < 30000
 group by rep.NAME
 ) t
-order by [кол-во заказов] desc
+order by [ГЄГ®Г«-ГўГ® Г§Г ГЄГ Г§Г®Гў] desc
 
--- Найти среднюю цену заказа для каждого офиса
+-- ГЌГ Г©ГІГЁ Г±Г°ГҐГ¤Г­ГѕГѕ Г¶ГҐГ­Гі Г§Г ГЄГ Г§Г  Г¤Г«Гї ГЄГ Г¦Г¤Г®ГЈГ® Г®ГґГЁГ±Г 
 Select avg(o.Amount) as Amount, COUNT(*) as Office
 From OFFICES ofs inner join ORDERS o
 on ofs.MGR = o.REP
@@ -132,26 +132,26 @@ INNER JOIN ORDERS o ON p.MFR_ID = o.MFR AND p.PRODUCT_ID = o.PRODUCT
 GROUP BY s.EMPL_NUM, o.PRODUCT
 ORDER by [price] desc
 
--- Найти сотрудников, у которых есть заказ стоимостью выше 2000, и отсортировать по убыванию стоимости заказа
-select rep.NAME,max(ord.AMOUNT)[стоимость] from ORDERS ord
+-- ГЌГ Г©ГІГЁ Г±Г®ГІГ°ГіГ¤Г­ГЁГЄГ®Гў, Гі ГЄГ®ГІГ®Г°Г»Гµ ГҐГ±ГІГј Г§Г ГЄГ Г§ Г±ГІГ®ГЁГ¬Г®Г±ГІГјГѕ ГўГ»ГёГҐ 2000, ГЁ Г®ГІГ±Г®Г°ГІГЁГ°Г®ГўГ ГІГј ГЇГ® ГіГЎГ»ГўГ Г­ГЁГѕ Г±ГІГ®ГЁГ¬Г®Г±ГІГЁ Г§Г ГЄГ Г§Г 
+select rep.NAME,max(ord.AMOUNT)[Г±ГІГ®ГЁГ¬Г®Г±ГІГј] from ORDERS ord
 join SALESREPS rep on rep.EMPL_NUM = ord.REP
 where ord.AMOUNT>2000
 group by rep.NAME
-order by [стоимость] desc
+order by [Г±ГІГ®ГЁГ¬Г®Г±ГІГј] desc
 
--- Подсчитать количество проданных товаров для каждого сотрудника и найти тех, кто продал больше 10 штук товаров
+-- ГЏГ®Г¤Г±Г·ГЁГІГ ГІГј ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЇГ°Г®Г¤Г Г­Г­Г»Гµ ГІГ®ГўГ Г°Г®Гў Г¤Г«Гї ГЄГ Г¦Г¤Г®ГЈГ® Г±Г®ГІГ°ГіГ¤Г­ГЁГЄГ  ГЁ Г­Г Г©ГІГЁ ГІГҐГµ, ГЄГІГ® ГЇГ°Г®Г¤Г Г« ГЎГ®Г«ГјГёГҐ 10 ГёГІГіГЄ ГІГ®ГўГ Г°Г®Гў
 select r.NAME,Sum(o.QTY) as amount from SALESREPS r
 join ORDERS o on r.EMPL_NUM = o.REP
 group by r.NAME
 having sum(o.QTY)>10
 
--- Найти среднюю цену заказа для каждого покупателя
+-- ГЌГ Г©ГІГЁ Г±Г°ГҐГ¤Г­ГѕГѕ Г¶ГҐГ­Гі Г§Г ГЄГ Г§Г  Г¤Г«Гї ГЄГ Г¦Г¤Г®ГЈГ® ГЇГ®ГЄГіГЇГ ГІГҐГ«Гї
 select CUSTOMERS.COMPANY, AVG(ORDERS.AMOUNT)
 from ORDERS join CUSTOMERS
 on ORDERS.CUST = CUSTOMERS.CUST_NUM
 group by ORDERS.CUST, CUSTOMERS.COMPANY
 
--- Найти сотрудников, у которых нет заказов
+-- ГЌГ Г©ГІГЁ Г±Г®ГІГ°ГіГ¤Г­ГЁГЄГ®Гў, Гі ГЄГ®ГІГ®Г°Г»Гµ Г­ГҐГІ Г§Г ГЄГ Г§Г®Гў
 select sls.NAME
 from SALESREPS sls
 where not exists(
@@ -159,6 +159,7 @@ select ord.REP
 from ORDERS ord
 where sls.EMPL_NUM = ord.REP
 )
+
 
 
 
